@@ -1,24 +1,40 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import Todo from './components/Todo';
+import './App.css'
+interface Todo {
+  title: string;
+  id: number;
+  completed: boolean;
+}
 
 function App() {
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [err, setError] = useState({});
+
+  const handleCompleted = (index: number) => {
+    const newTodos = [...todos];
+    newTodos[index].completed = !newTodos[index].completed;
+    setTodos(newTodos);
+  };
+
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/todos?_limit=10')
+      .then((response) => response.json())
+      .then((res) => setTodos(res))
+      .catch((err) => {
+        console.log(err);
+        setError(err);
+      });
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {todos.length > 0
+        ? todos.map((todo: Todo, index) => (
+           <Todo key={todo.id} todo={todo} index={index} handleCompleted={handleCompleted} />
+
+          ))
+        : <p>Loading...</p>}
     </div>
   );
 }

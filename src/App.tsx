@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Todo from './components/Todo';
+import TodoForm from './components/TodoForm'
 import './App.css'
+import Loader from './components/Loader';
 interface Todo {
   title: string;
   id: number;
@@ -16,7 +18,14 @@ function App() {
     newTodos[index].completed = !newTodos[index].completed;
     setTodos(newTodos);
   };
-
+const handleDelete = (index:number)=>{
+  const newTodos = [...todos]
+  newTodos.splice(index,1)
+  setTodos(newTodos)
+}
+const handleOnSubmit = (value:string)=>{
+  setTodos ([...todos,{title:value,id:todos.length +1, completed:false}])
+}
   useEffect(() => {
     fetch('https://jsonplaceholder.typicode.com/todos?_limit=10')
       .then((response) => response.json())
@@ -31,10 +40,11 @@ function App() {
     <div className="App">
       {todos.length > 0
         ? todos.map((todo: Todo, index) => (
-           <Todo key={todo.id} todo={todo} index={index} handleCompleted={handleCompleted} />
+           <Todo key={todo.id} todo={todo} index={index} handleCompleted={handleCompleted} handleDelete={handleDelete} />
 
           ))
-        : <p>Loading...</p>}
+        : (<Loader/>)}
+        <TodoForm handleOnSubmit={handleOnSubmit}/>
     </div>
   );
 }

@@ -9,7 +9,8 @@ interface Props{
 }
 
 const Todo:React.FC<Props> = ({todo,index,handleCompleted,handleDelete})=>{
-   return (<div className="todo" style={{ textDecoration:todo.completed ? 'line-through' : ''}}> {todo.title}
+   return (
+   <div className="todo" style={{ textDecoration:todo.completed ? 'line-through' : ''}}> {todo.title}
    <button onClick={()=> handleCompleted(index)}>{todo.completed ? 'Incomplete' : 'Complete'}</button>
    <button onClick={()=>{handleDelete(index)}}>Delete</button></div>)
 }
